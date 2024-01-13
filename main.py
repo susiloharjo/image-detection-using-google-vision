@@ -8,7 +8,7 @@ from google.cloud.vision_v1 import types
 client = vision.ImageAnnotatorClient()
 
 # Read the image file
-image_path = "image2.jpg"
+image_path = "image.jpg"
 with io.open(image_path, "rb") as image_file:  # Use io.open for binary data
     content = image_file.read()
 
@@ -25,7 +25,9 @@ draw = ImageDraw.Draw(img)
 # Print detected objects and draw rectangles
 # Print detected objects, draw rectangles, and add labels
 print("Objects:")
+object_count = 0
 for object_annotation in response.localized_object_annotations:
+    object_count += 1  # Increment object count
     print(object_annotation.name)
 
     # Extract bounding box information
@@ -43,6 +45,13 @@ for object_annotation in response.localized_object_annotations:
         # Add label text
         font = ImageFont.truetype("arial.ttf", 14)  # Adjust font and size as needed
         draw.text((text_x, text_y), object_annotation.name, font=font, fill='red')
+
+# Add total object count text
+font = ImageFont.truetype("arial.ttf", 16)  # Adjust font and size as needed
+text_x = 10  # Position text at the top left corner
+text_y = 10
+draw.text((text_x, text_y), f"Total Objects: {object_count}", font=font, fill='red')
+
 
 # Save the image with rectangles
 img_with_rectangles_path = "image_with_rectangles.jpg"
